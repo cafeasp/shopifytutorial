@@ -39,7 +39,30 @@ namespace ShopifyApp05.Controllers
 
             var r = JsonConvert.DeserializeObject<dynamic>(response.Content);
             var access = r.access_token;
+            
+            //Part 5
+                //create a un-install web hook
+                //you want to know when customers delete your app from their shop
+
+                string unInstallUrlCallback = "https://549653d4.ngrok.io/fulfillment/uninstall";
+
+                string shopAdmin = string.Format("https://{0}/admin/", shop);
+
+                var webHook = new WebHookBucket();
+                webHook.Whook = new WebHook { Format = "json", Topic = "app/uninstalled", Address = unInstallUrlCallback };
+
+                CreateUninstallHook(shopAdmin, "webhooks.json", Method.POST, (string)accessToken, webHook);
             return View();
+        }
+        
+                [HttpPost]
+        public ActionResult uninstall()
+        {
+            var req = Request.InputStream;
+            var json = new StreamReader(req).ReadToEnd();
+
+            return new HttpStatusCodeResult(200);
+
         }
     }
 }
