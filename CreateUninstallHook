@@ -1,0 +1,19 @@
+        public string CreateUninstallHook(string baseUrl, string endPoint, RestSharp.Method method, string token, WebHookBucket webhook)
+        {
+            var client = new RestClient(baseUrl);
+
+            var request = new RestRequest(endPoint, method);
+
+            request.RequestFormat = DataFormat.Json;
+
+            request.AddHeader("X-Shopify-Access-Token", token);
+
+            string json = JsonConvert.SerializeObject(webhook, Formatting.Indented);
+
+            request.AddParameter("application/json", json, ParameterType.RequestBody);
+
+            // execute the request
+            var r = client.Execute(request);
+
+            return r.Content;
+        }
