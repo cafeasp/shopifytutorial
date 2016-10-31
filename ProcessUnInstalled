@@ -1,0 +1,21 @@
+private void ProcessUnInstalled(string jsonData)
+        {
+            using (var con = new FulfillmentDbEntities())
+            {
+                
+                    var json = JsonConvert.DeserializeObject<dynamic>(jsonData);
+
+                    string domain = json.domain.ToString();
+                    string myshopify_domain = json.myshopify_domain.ToString();
+
+                    if (con.ShopTokens.Any(c => c.Shop == domain) || con.ShopTokens.Any(c=>c.Shop == myshopify_domain))
+                    {
+
+                    var updateRow = con.ShopTokens.FirstOrDefault(c => c.Shop == domain);
+                    updateRow.UninstallDate = DateTime.Now;
+                    updateRow.Token = "";
+                    con.SaveChanges();
+                    }
+                    
+            }
+        }
