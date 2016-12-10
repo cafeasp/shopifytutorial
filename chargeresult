@@ -1,0 +1,50 @@
+        public ActionResult chargeresult(string shop, string charge_id)
+        {
+
+            string token = GetShopToken(shop);
+            string shopAdmin = string.Format("https://{0}/admin/", shop);
+
+            //FIND OUT IF THE CUSTOMER ACCEPT THE CHARGE OR NOT
+            var values = CheckChargeStatus(token, shop, charge_id);
+
+            //UPDATE DETAILS
+           
+
+            //SEE THE STATUS
+            if (values.recurring_application_charge.status == "declined")
+            {
+                //send customer somewere
+                return RedirectToAction("Contact", "Home");
+            }
+            else if (values.recurring_application_charge.status == "accepted")
+            {
+                //save charge id
+                
+
+                //activate charge
+                ChargeResult copyValues = values;
+                copyValues.recurring_application_charge.confirmation_url = null;
+
+                var active = ActivateCharge(token, shop, charge_id, copyValues);
+
+                if (active == HttpStatusCode.OK)
+                {
+
+                    //CUSTOMER ACCEPTED CHARGE GO TO APP
+                    return RedirectToAction("About", "Home");
+                }
+                else
+                {
+
+                    //fail to actived
+
+                    //send customer to error page
+                    return RedirectToAction("Contact", "Home");
+                }
+
+            }else
+            {
+                return RedirectToAction("Contact", "Home");
+            }
+            
+        }
