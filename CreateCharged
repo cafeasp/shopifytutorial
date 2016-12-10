@@ -1,0 +1,16 @@
+        public IRestResponse CreateCharged(string token, string shop, Recurring recurring)
+        {
+            var client = new RestClient("https://" + shop + "/admin/");
+
+            var request = new RestRequest("recurring_application_charges.json", Method.POST);
+            request.RequestFormat = DataFormat.Json;
+            request.AddHeader("X-Shopify-Access-Token", token);
+            string json = JsonConvert.SerializeObject(recurring, Formatting.Indented);
+
+            request.AddParameter("application/json", json, ParameterType.RequestBody);
+
+            // execute the request
+            var result = client.Execute(request);
+            return result;
+            
+        }
