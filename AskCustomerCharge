@@ -1,0 +1,31 @@
+private string AskCustomerCharge(string shop, string token)
+        {
+            //create charged
+            var recurring = new Recurring();
+
+            recurring.Charge = new ChargeDetails
+            {
+                Name = "Fulfillment App Pro",
+                Price ="20.00",
+                ReturnUrl = string.Format("https://{0}/fulfillment/chargeresult?shop={1}", appUrl, shop),
+                TrialDays = "2",
+                Test = "true"
+            };
+
+            var chargeResultDetails = CreateCharged(token, shop, recurring);
+
+            if (chargeResultDetails.StatusCode == HttpStatusCode.Created)
+            {
+                ChargeResult chargeResult = JsonConvert.DeserializeObject<ChargeResult>(chargeResultDetails.Content);
+
+                //save to DB
+                
+
+                //send to charge link for customer to accept or declined charge
+               
+             return chargeResult.recurring_application_charge.confirmation_url;
+
+            }
+            return "";
+           
+        }
